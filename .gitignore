@@ -1,0 +1,5 @@
+# Ignore Visual Studio and IntelliJ IDEA configuration folders globally
+**/.vs/
+**/.idea/
+**/bin/
+**/obj/

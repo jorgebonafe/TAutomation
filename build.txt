@@ -1,0 +1,3 @@
+displayName = TAutomation
+author = Bonafé
+version = 0.11

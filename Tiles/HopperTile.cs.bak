@@ -1,0 +1,146 @@
+﻿using Microsoft.Xna.Framework;
+using TAutomation.Utils;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
+
+namespace TAutomation.Tiles
+{
+	public class HopperTile : ModTile
+    {
+		public override void SetStaticDefaults()
+		{
+            Main.tileSolidTop[Type] = false;
+            Main.tileSolid[Type] = false;
+            Main.tileMergeDirt[Type] = false;
+            Main.tileBlockLight[Type] = false;
+            Main.tileLighted[Type] = false;
+            Main.tileFrameImportant[Type] = true;
+            DustType = 7; // Wood
+
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Height = 1;
+            TileObjectData.newTile.CoordinateHeights = new[] { 16 };
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinatePadding = 2;
+
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.AlternateTile, 2, 0);
+            TileObjectData.newTile.AnchorAlternateTiles = new int[1] { 21 };
+
+			TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(CanPlace, -1, 0, true);
+
+            TileObjectData.addTile(Type);
+
+            AddMapEntry(new Color(214, 143, 118));
+        }
+
+		public int CanPlace(int i, int j, int type, int style, int direction, int alternative)
+		{
+            // Top Left corner of the chest tile is the chest entity.
+            int chestId = Chest.FindChest(i, j+1); // If this exists, hopper is above chest
+            if (chestId == -1)
+                return -1;
+
+            //Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(
+            //    "ASD"
+            //), new Color(150, 250, 150));
+
+            return 0;
+		}
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, ModContent.ItemType<Items.HopperItem>());
+        }
+    }
+
+
+    public class HopperTileEntity : ModTileEntity
+    {
+        public override bool IsTileValidForEntity(int i, int j)
+        {
+            Tile tile = Main.tile[i, j];
+            return tile.active();
+        }
+
+        //public bool off = false;
+        //public bool toggle = false;
+
+        //public override void Update()
+        //{
+        //    if (toggle)
+        //    {
+        //        off = !off;
+        //    }
+        //    if (!off)
+        //    {
+        //        Main.tile[Position.X, Position.Y].frameX = 0;
+        //        Main.tile[Position.X, Position.Y].frameY = 0;
+        //        Main.tile[Position.X + 1, Position.Y].frameX = 18;
+        //        Main.tile[Position.X + 1, Position.Y].frameY = 0;
+        //        Main.tile[Position.X, Position.Y + 1].frameX = 0;
+        //        Main.tile[Position.X, Position.Y + 1].frameY = 18;
+        //        Main.tile[Position.X + 1, Position.Y + 1].frameX = 18;
+        //        Main.tile[Position.X + 1, Position.Y + 1].frameY = 18;
+        //        if ((Main.LocalPlayer.Center - ((Position.ToVector2() * 16) + new Vector2(16, 16))).Length() < 300)
+        //        {
+        //            if (Main.LocalPlayer.GetModPlayer<QwertyPlayer>().forcedAntiGravity == 0)
+        //            {
+        //                Main.LocalPlayer.velocity.Y = 0;
+        //            }
+        //            Main.LocalPlayer.GetModPlayer<QwertyPlayer>().forcedAntiGravity = 10;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Main.tile[Position.X, Position.Y].frameX = 0 + 36;
+
+        //        Main.tile[Position.X + 1, Position.Y].frameX = 18 + 36;
+
+        //        Main.tile[Position.X, Position.Y + 1].frameX = 0 + 36;
+
+        //        Main.tile[Position.X + 1, Position.Y + 1].frameX = 18 + 36;
+        //    }
+        //    toggle = false;
+        //}
+
+        //public override void NetSend(BinaryWriter writer, bool lightSend)
+        //{
+        //    writer.Write(off);
+        //}
+
+        //public override void NetReceive(BinaryReader reader, bool lightReceive)
+        //{
+        //    off = reader.ReadBoolean();
+        //}
+
+        //public override TagCompound Save()
+        //{
+        //    return new TagCompound
+        //    {
+        //        {"off", off}
+        //    };
+        //}
+
+        //public override void Load(TagCompound tag)
+        //{
+        //    off = tag.GetBool("off");
+        //}
+
+        //public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
+        //{
+        //    if (Main.netMode == 1)
+        //    {
+        //        NetMessage.SendTileSquare(Main.myPlayer, i, j, 3);
+        //        NetMessage.SendData(87, -1, -1, null, i, j, Type, 0f, 0, 0, 0);
+        //        return -1;
+        //    }
+        //    return Place(i, j);
+        //}
+    }
+}

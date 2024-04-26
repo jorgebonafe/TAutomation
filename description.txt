@@ -1,0 +1,9 @@
+Work in progress.
+
+Tiles:
+
+Rain Sensor: Triggers when it rains
+
+Blood Moon Sensor: Triggers on Blood Moons
+
+Hopper: Place it above a chest. It picks up items that fall on it and places them in the chest.
